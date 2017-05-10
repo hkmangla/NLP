@@ -31,13 +31,13 @@ def softmax(x):
     if len(x.shape) > 1:
         x = x.transpose()
         x_max = np.max(x,axis=0)
-        x -= x_max
+        x = x - x_max
         x = np.exp(x) / np.sum(np.exp(x),axis=0)
         x = x.transpose()
     else:
         # Vector
         x_max = np.max(x)
-        x = x - x_max
+        x -= x_max
         x = np.exp(x) / np.sum(np.exp(x))
 
     assert x.shape == orig_shape
