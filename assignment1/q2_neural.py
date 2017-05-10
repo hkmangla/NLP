@@ -36,14 +36,11 @@ def forward_backward_prop(data, labels, params, dimensions):
     b2 = np.reshape(params[ofs:ofs + Dy], (1, Dy))
 
     ### YOUR CODE HERE: forward propagation
-    z1 = np.matmul(data,W1) + b1
+    z1 = np.dot(data,W1) + b1
     h = sigmoid(z1)
-    z2 = np.matmul(h,W2) + b2
+    z2 = np.dot(h,W2) + b2
     predict = softmax(z2)
-    cost = 0
-    for i in range(labels.shape[0]):
-        cost -= (np.dot(labels[i],np.log(predict[i])))
-
+    cost = -np.sum(np.log(predict)*labels)
     ### YOUR CODE HERE: backward propagation
     delta1 = predict - labels # M * Dy
     gradW2 = np.matmul(h.T,delta1) # H * Dy
@@ -65,8 +62,8 @@ def sanity_check():
     """
     print "Running sanity check..."
 
-    N = 2
-    dimensions = [2, 1, 2]
+    N = 20
+    dimensions = [10, 5, 10]
     data = np.random.randn(N, dimensions[0])   # each row will be a datum
     labels = np.zeros((N, dimensions[2]))
     for i in xrange(N):
@@ -87,9 +84,16 @@ def your_sanity_checks():
     """
     print "Running your sanity checks..."
     ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
-
+    N = 40
+    dimensions = [30,20,30]
+    data = np.random.randn(N,dimensions[0])
+    labels = np.zeros((N,dimensions[2]))
+    for i in xrange(N):
+        labels[i,random.randint(0,dimensions[2]-1)] = 1
+    params = np.random.randn((dimensions[0]+1) * dimensions[1] + 
+            (dimensions[1] + 1) * dimensions[2],)
+    gradcheck_naive(lambda params :
+        forward_backward_prop(data,labels,params,dimensions), params)
 
 if __name__ == "__main__":
     sanity_check()
