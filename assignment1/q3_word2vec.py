@@ -170,14 +170,22 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     derivations are not. If you decide not to implement CBOW, remove
     the NotImplementedError.
     """
-
     cost = 0.0
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
-
+    V = outputVectors.shape[0]
+    N = outputVectors.shape[1]
     ### YOUR CODE HERE
-    # raise NotImplementedError
-    ### END YOUR CODE
+    vhat = np.zeros((N,))
+    for i in contextWords:
+        vhat += (inputVectors[tokens[i]])
+    dcost,dgradIn,dgradOut = word2vecCostAndGradient(vhat,tokens[currentWord],outputVectors,dataset)
+    cost = dcost
+    gradOut = dgradOut
+    gradIn = np.zeros((V,N))
+    for i in contextWords:
+        gradIn[tokens[i]] += dgradIn
+
 
     return cost, gradIn, gradOut
 
