@@ -85,8 +85,9 @@ def sgd(f, x0, step, iterations, postprocessing=None, useSaved=False,
 
         cost = None
         ### YOUR CODE HERE
-        raise NotImplementedError
-        ### END YOUR CODE
+        cost,grad = f(x)
+        x -= grad*step
+        x = postprocessing(x)
 
         if iter % PRINT_EVERY == 0:
             if not expcost:
@@ -120,7 +121,7 @@ def sanity_check():
     print "test 3 result:", t3
     assert abs(t3) <= 1e-6
 
-    print ""
+    print "Well Done!!"
 
 
 def your_sanity_checks():
@@ -130,12 +131,20 @@ def your_sanity_checks():
     This function will not be called by the autograder, nor will
     your additional tests be graded.
     """
+    quad = lambda x: (np.sum( 4 * (x ** 4) + x ** 3 + x ** 2), 16 * (x ** 3) + 3 * (x ** 2) + 2 * x)
     print "Running your sanity checks..."
-    ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    t1 = sgd(quad,1.0,0.01,1000,PRINT_EVERY=100)
+    print "test 1 result:", t1
+    assert abs(t1) <= 1e-6
 
+    t2 = sgd(quad, 0.0, 0.01, 1000, PRINT_EVERY=100)
+    print "test 2 result:", t2
+    assert abs(t2) <= 1e-6
 
+    t3 = sgd(quad, -1.5, 0.01, 1000, PRINT_EVERY=100)
+    print "test 3 result:", t3
+    assert abs(t3) <= 1e-6
+    print "Well Done!!"
 if __name__ == "__main__":
     sanity_check()
     your_sanity_checks()
