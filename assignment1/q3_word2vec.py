@@ -96,10 +96,23 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     # wish to match the autograder and receive points!
     indices = [target]
     indices.extend(getNegativeSamples(target, dataset, K))
-
     ### YOUR CODE HERE
-    # raise NotImplementedError
-    ### END YOUR CODE
+    V = outputVectors.shape[0]
+    N = outputVectors.shape[1]
+    cost = 0
+    gradPred = np.zeros((N,))
+    grad = np.zeros((V,N))
+    for k in indices:
+        if k == target:
+            sig_uo_vc  = sigmoid(np.dot(outputVectors[k],predicted))
+            cost  -= np.log(sig_uo_vc)
+            gradPred += ((sig_uo_vc - 1) * outputVectors[k])
+            grad[k] = ((sig_uo_vc - 1) * predicted) 
+        else:
+            sig_uk_vc  = sigmoid(-np.dot(outputVectors[k],predicted))
+            cost -= np.log(sig_uk_vc)
+            gradPred -= ((sig_uk_vc - 1) * outputVectors[k])
+            grad[k] = -((sig_uk_vc - 1) * predicted)
 
     return cost, gradPred, grad
 
