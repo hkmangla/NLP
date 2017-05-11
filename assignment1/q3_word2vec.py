@@ -15,8 +15,7 @@ def normalizeRows(x):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    x = (x.T / np.sqrt(np.sum(x**2,axis=1))).T
 
     return x
 
@@ -58,9 +57,12 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
-    raise NotImplementedError
-    ### END YOUR CODE
+    y_pred = np.exp(np.dot(outputVectors,predicted)) / np.sum(np.exp(np.dot(outputVectors,predicted)))
+    cost = -np.log(y_pred[target])
 
+    gradPred = -outputVectors[target] + np.sum((outputVectors.T * y_pred).T, axis=0)
+    y_pred[target] -= 1
+    grad =  np.matmul(y_pred.T,predicted)
     return cost, gradPred, grad
 
 
@@ -96,7 +98,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     indices.extend(getNegativeSamples(target, dataset, K))
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    # raise NotImplementedError
     ### END YOUR CODE
 
     return cost, gradPred, grad
@@ -131,7 +133,7 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    # raise NotImplementedError
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
@@ -155,7 +157,7 @@ def cbow(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     gradOut = np.zeros(outputVectors.shape)
 
     ### YOUR CODE HERE
-    raise NotImplementedError
+    # raise NotImplementedError
     ### END YOUR CODE
 
     return cost, gradIn, gradOut
