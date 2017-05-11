@@ -57,12 +57,14 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     """
 
     ### YOUR CODE HERE
+    V = outputVectors.shape[0]
+    N = outputVectors.shape[1]
     y_pred = np.exp(np.dot(outputVectors,predicted)) / np.sum(np.exp(np.dot(outputVectors,predicted)))
     cost = -np.log(y_pred[target])
 
     gradPred = -outputVectors[target] + np.sum((outputVectors.T * y_pred).T, axis=0)
     y_pred[target] -= 1
-    grad =  np.matmul(y_pred.T,predicted)
+    grad =  np.matmul(y_pred.reshape((V,1)),predicted.reshape((1,N)))
     return cost, gradPred, grad
 
 
@@ -99,7 +101,7 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
     ### YOUR CODE HERE
     V = outputVectors.shape[0]
     N = outputVectors.shape[1]
-    cost = 0
+    cost = 0.0
     gradPred = np.zeros((N,))
     grad = np.zeros((V,N))
     for k in indices:
@@ -107,12 +109,12 @@ def negSamplingCostAndGradient(predicted, target, outputVectors, dataset,
             sig_uo_vc  = sigmoid(np.dot(outputVectors[k],predicted))
             cost  -= np.log(sig_uo_vc)
             gradPred += ((sig_uo_vc - 1) * outputVectors[k])
-            grad[k] = ((sig_uo_vc - 1) * predicted) 
+            grad[k] += ((sig_uo_vc - 1) * predicted) 
         else:
             sig_uk_vc  = sigmoid(-np.dot(outputVectors[k],predicted))
             cost -= np.log(sig_uk_vc)
             gradPred -= ((sig_uk_vc - 1) * outputVectors[k])
-            grad[k] = -((sig_uk_vc - 1) * predicted)
+            grad[k]  -= ((sig_uk_vc - 1) * predicted)
 
     return cost, gradPred, grad
 
@@ -144,11 +146,15 @@ def skipgram(currentWord, C, contextWords, tokens, inputVectors, outputVectors,
     cost = 0.0
     gradIn = np.zeros(inputVectors.shape)
     gradOut = np.zeros(outputVectors.shape)
-
+    
     ### YOUR CODE HERE
-    # raise NotImplementedError
-    ### END YOUR CODE
-
+    for i in contextWords:
+        dcost,dgradIn,dgradOut = word2vecCostAndGradient(inputVectors[tokens[currentWord]],
+            tokens[i],outputVectors,dataset)
+        cost += dcost
+        gradIn[tokens[currentWord]] += dgradIn
+        gradOut += dgradOut     
+    
     return cost, gradIn, gradOut
 
 
