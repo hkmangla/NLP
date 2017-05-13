@@ -45,6 +45,12 @@ class SoftmaxModel(Model):
             self.labels_placeholder
         """
         ### YOUR CODE HERE
+        batch_size = self.config.batch_size
+        n_features = self.config.n_features
+        n_classes = self.config.n_classes
+
+        self.input_placeholder = tf.placeholder(tf.float32,[batch_size,n_features])
+        self.labels_placeholder = tf.placeholder(tf.int32,[batch_size,n_classes])
         ### END YOUR CODE
 
     def create_feed_dict(self, inputs_batch, labels_batch=None):
@@ -68,6 +74,10 @@ class SoftmaxModel(Model):
             feed_dict: The feed dictionary mapping from placeholders to values.
         """
         ### YOUR CODE HERE
+        feed_dict = {
+            self.input_placeholder : inputs_batch,
+            self.labels_placeholder : labels_batch
+        }
         ### END YOUR CODE
         return feed_dict
 
@@ -88,6 +98,13 @@ class SoftmaxModel(Model):
             pred: A tensor of shape (batch_size, n_classes)
         """
         ### YOUR CODE HERE
+        batch_size = self.config.batch_size
+        n_features = self.config.n_features
+        n_classes = self.config.n_classes
+        with tf.variable_scope("linear"):
+            W = tf.Variable(tf.fill([n_features,n_classes],0.0))
+            b = tf.Variable(tf.fill([n_classes],0.0))
+            pred = softmax(tf.matmul(self.input_placeholder,W )+ b)
         ### END YOUR CODE
         return pred
 
@@ -102,6 +119,7 @@ class SoftmaxModel(Model):
             loss: A 0-d tensor (scalar)
         """
         ### YOUR CODE HERE
+        loss = cross_entropy_loss(self.labels_placeholder,pred)
         ### END YOUR CODE
         return loss
 
@@ -125,6 +143,8 @@ class SoftmaxModel(Model):
             train_op: The Op for training.
         """
         ### YOUR CODE HERE
+        op = tf.train.GradientDescentOptimizer(self.config.lr)
+        train_op = op.minimize(loss)
         ### END YOUR CODE
         return train_op
 
@@ -188,12 +208,12 @@ def test_softmax_model():
     with tf.Graph().as_default():
         # Build the model and add the variable initializer Op
         model = SoftmaxModel(config)
-        init = tf.global_variables_initializer()
+        # init = tf.global_variables_initializer()
         # If you are using an old version of TensorFlow, you may have to use
         # this initializer instead.
-        # init = tf.initialize_all_variables()
+        init = tf.initialize_all_variables()
 
-        # Create a session for running Ops in the Graph
+        # Create a session for running Ops in the graph
         with tf.Session() as sess:
             # Run the Op to initialize the variables.
             sess.run(init)

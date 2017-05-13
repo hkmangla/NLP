@@ -24,7 +24,11 @@ def softmax(x):
     """
 
     ### YOUR CODE HERE
-    out = tf.div(tf.exp(x), tf.reduce_sum(tf.exp(x), 0))
+    maxes = tf.reduce_max(x,reduction_indices=1)
+    subtr = tf.sub(x, tf.transpose(tf.expand_dims(maxes,0)))
+    exps = tf.exp(subtr)
+    totalexps = tf.reduce_sum(exps,reduction_indices=1)
+    out = exps / tf.transpose(tf.expand_dims(totalexps,0))
     ### END YOUR CODE
 
     return out
@@ -55,7 +59,8 @@ def cross_entropy_loss(y, yhat):
     """
 
     ### YOUR CODE HERE
-    out = -tf.reduce_sum(tf.to_float(y) * tf.log(yhat))
+    sums = tf.reduce_sum(tf.mul(tf.to_float(y),yhat), 1)
+    out = -tf.reduce_sum(tf.log(sums))
     ### END YOUR CODE
 
     return out
@@ -77,6 +82,7 @@ def test_softmax_basic():
     with tf.Session() as sess:
             test2 = sess.run(test2)
     test_all_close("Softmax test 2", test2, np.array([[0.73105858, 0.26894142]]))
+
 
     print "Basic (non-exhaustive) softmax tests pass\n"
 
