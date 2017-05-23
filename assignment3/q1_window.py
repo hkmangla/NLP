@@ -363,7 +363,7 @@ def do_test2(args):
         model = WindowModel(helper, config, embeddings)
         logger.info("took %.2f seconds", time.time() - start)
 
-        # init = tf.global_variables_initializer()//
+        # init = tf.initialize_all_variables()//
         init = tf.initialize_all_variables()
         saver = None
 
@@ -395,7 +395,7 @@ def do_train(args):
         model = WindowModel(helper, config, embeddings)
         logger.info("took %.2f seconds", time.time() - start)
 
-        init = tf.global_variables_initializer()
+        init = tf.initialize_all_variables()
         saver = tf.train.Saver()
 
         with tf.Session() as session:
@@ -431,7 +431,7 @@ def do_evaluate(args):
 
         logger.info("took %.2f seconds", time.time() - start)
 
-        init = tf.global_variables_initializer()
+        init = tf.initialize_all_variables()
         saver = tf.train.Saver()
 
         with tf.Session() as session:
@@ -453,7 +453,7 @@ def do_shell(args):
         model = WindowModel(helper, config, embeddings)
         logger.info("took %.2f seconds", time.time() - start)
 
-        init = tf.global_variables_initializer()
+        init = tf.initialize_all_variables()
         saver = tf.train.Saver()
 
         with tf.Session() as session:
