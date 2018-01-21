@@ -62,7 +62,7 @@ def softmaxCostAndGradient(predicted, target, outputVectors, dataset):
     y_pred = np.exp(np.dot(outputVectors,predicted)) / np.sum(np.exp(np.dot(outputVectors,predicted)))
     cost = -np.log(y_pred[target])
 
-    gradPred = -outputVectors[target] + np.sum((outputVectors.T * y_pred).T, axis=0)
+    gradPred = -outputVectors[target] + np.dot(y_pred,outputVectors)
     y_pred[target] -= 1
     grad =  np.matmul(y_pred.reshape((V,1)),predicted.reshape((1,N)))
     return cost, gradPred, grad
