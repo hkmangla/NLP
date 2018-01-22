@@ -279,6 +279,6 @@ def main(debug=True):
                 print "Done!"
 
 if __name__ == '__main__':
-    main()
+    main(False)
 
 
