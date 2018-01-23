@@ -207,6 +207,7 @@ class ParserModel(Model):
     def run_epoch(self, sess, parser, train_examples, dev_set):
         prog = Progbar(target=1 + len(train_examples) / self.config.batch_size)
         for i, (train_x, train_y) in enumerate(minibatches(train_examples, self.config.batch_size)):
+            print train_x.shape
             loss = self.train_on_batch(sess, train_x, train_y)
             prog.update(i + 1, [("train loss", loss)])
 
@@ -241,7 +242,7 @@ def main(debug=True):
     parser, embeddings, train_examples, dev_set, test_set = load_and_preprocess_data(debug)
     if not os.path.exists('./data/weights/'):
         os.makedirs('./data/weights/')
-
+    print train_examples[0]
     with tf.Graph().as_default():
         print "Building model...",
         start = time.time()
@@ -279,6 +280,6 @@ def main(debug=True):
                 print "Done!"
 
 if __name__ == '__main__':
-    main(False)
+    main(True)
 
 
